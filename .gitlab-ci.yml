@@ -1,0 +1,10 @@
+build:
+  tags:
+    - make
+  stage: build
+  script:
+    - make build.tar.gz
+  artifacts:
+    paths:
+      - build.tar.gz
+    expire_in: 4 days
