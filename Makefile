@@ -1,13 +1,12 @@
 PROGRAM=minestorm
 
 # Add your objs to generate in OBJS var
-OBJS=src/main.o
-
+OBJS=src/game.o src/main.o third_party/include/mathematics.o
 CC?=gcc
 TARGET?=$(shell $(CC) -dumpmachine)
 
 CFLAGS=-O0 -g -Wall -Wextra -Wno-unused-parameter
-CPPFLAGS=-Iinclude -Ithird_party/include -MMD
+CPPFLAGS=-Iinclude -Ithird_party/include -MMD 
 LDFLAGS=-Lthird_party/libs-$(TARGET)
 LDLIBS=-lraylib
 
