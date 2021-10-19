@@ -41,10 +41,11 @@ int main(void)
  
         ClearBackground(RAYWHITE);
         DrawTexture(textback, 0, 0, WHITE);
-           DrawText(TextFormat("ANGLE: %f",game.player.angle), 100, 130, 30, WHITE);
-            DrawText(TextFormat("x: %f   y:%f",game.player.position.x,game.player.position.y), 100, 160, 30, WHITE);
+        DrawText(TextFormat("ANGLE: %f",game.player.angle), 100, 130, 30, WHITE);
+        DrawText(TextFormat("x: %f   y:%f",game.player.position.x,game.player.position.y), 100, 160, 30, WHITE);
         gameUpdateAndDraw(&game);
         DrawTexturePro(textlogo, source, dest, origin, (float)game.player.angle, WHITE);
+        drawBorder(&game.player,textlogo, source, dest, origin, (float)game.player.angle, WHITE);
         DrawTexture(textfore, 0, 0, WHITE);
         
         EndDrawing();

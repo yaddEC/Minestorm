@@ -54,7 +54,7 @@ float valeur_absolu (float a)
     {
         r = a *(-1);
     }
-    printf("\nLa valeur absolu de %f est egale a %f\n",a ,r);
+    printf("\nLa valeur absolu de %d est egale a %f\n",a ,r);
     return r;
 }
 float degToRad(float deg)

@@ -4,10 +4,7 @@ typedef struct Object
 {
     Vec position;
     float angle;
-    float vel;
-    float dirx;
-    float diry;
-
+    Vec vel;
 } Object;
 
 typedef struct Game
@@ -20,3 +17,4 @@ typedef struct Game
 void gameInit(Game *game);
 void gameUpdateAndDraw(Game *game);
 bool gameIsOver(Game *game);
+void drawBorder(Object *player, Texture2D texture, Rectangle source, Rectangle dest, Vec origin, float rotation, Color tint);
