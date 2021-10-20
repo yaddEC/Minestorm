@@ -62,3 +62,13 @@ float degToRad(float deg)
     return deg * (PI/180);
   
 }
+
+Vec rotateVec (Vec tor, Vec origin, float angle )
+{
+    Vec tor2;
+    tor2.x=cos(angle)*( tor.x - origin.x) - sin(angle) * (tor.y-origin.y) + origin.x;
+    tor2.y=sin(angle)*( tor.x - origin.x) + cos(angle) * ((tor.y-origin.y) + origin.y;
+    return tor2;
+
+
+}
