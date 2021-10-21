@@ -54,7 +54,7 @@ float valeur_absolu (float a)
     {
         r = a *(-1);
     }
-    printf("\nLa valeur absolu de %d est egale a %f\n",a ,r);
+    printf("\nLa valeur absolu de %f est egale a %f\n",a ,r);
     return r;
 }
 float degToRad(float deg)
@@ -66,8 +66,10 @@ float degToRad(float deg)
 Vec rotateVec (Vec tor, Vec origin, float angle )
 {
     Vec tor2;
-    tor2.x=cos(angle)*( tor.x - origin.x) - sin(angle) * (tor.y-origin.y) + origin.x;
-    tor2.y=sin(angle)*( tor.x - origin.x) + cos(angle) * ((tor.y-origin.y) + origin.y;
+    
+    tor2.x=cos(degToRad(angle))*( tor.x - origin.x) - sin(degToRad(angle)) * (tor.y-origin.y) + origin.x;
+    tor2.y=sin(degToRad(angle))*( tor.x - origin.x) + cos(degToRad(angle)) * (tor.y-origin.y) + origin.y;
+
     return tor2;
 
 

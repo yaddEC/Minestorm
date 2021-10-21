@@ -17,3 +17,4 @@ float fsin(float a);
 float ftan(float a);
 float valeur_absolu (float a);
 float degToRad(float deg);
+Vec rotateVec (Vec tor, Vec origin, float angle );
