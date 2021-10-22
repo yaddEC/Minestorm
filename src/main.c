@@ -20,6 +20,8 @@ int main(void)
     Rectangle source = {0.0f, 0.0f, (float)width, (float)height};
     Rectangle dest = {screenWidth / 2.0f, screenHeight / 2.0f, width / 3, height / 3};
     Vec origin = {(float)width / 6, (float)height / 6};
+    Vec test;
+    Vec test2;
     Texture2D textback = LoadTextureFromImage(background);
     Texture2D textfore = LoadTextureFromImage(foreground);
     UnloadImage(background);
@@ -35,7 +37,7 @@ int main(void)
         if (ui == 0)
         {
             DrawText(TextFormat("Mode solo : Appuyez sur F"), 100, 130, 30, WHITE);
-            DrawText(TextFormat("Mode coop : Appuyez sur K"), 100,170, 30, WHITE);
+            DrawText(TextFormat("Mode coop : Appuyez sur K"), 100, 170, 30, WHITE);
         }
         else
         {
@@ -52,18 +54,19 @@ int main(void)
                 DrawTexturePro(textship, source, dest, origin, (float)game.player[0].object.angle, RED);
                 drawBorder(&game.player[0], textship, source, dest, origin, (float)game.player[0].object.angle, RED);
                 DrawTriangleLines(game.player[0].cot1, game.player[0].cot2, game.player[0].cot3, WHITE);
-                if(game.coop==true)
+                if (game.coop == true)
                 {
-                dest.x = game.player[1].object.position.x;
-                dest.y = game.player[1].object.position.y;
-                DrawTexturePro(textship, source, dest, origin, (float)game.player[1].object.angle, GREEN);
-                drawBorder(&game.player[1], textship, source, dest, origin, (float)game.player[1].object.angle,GREEN);
-                DrawTriangleLines(game.player[1].cot1, game.player[1].cot2, game.player[1].cot3, WHITE);
-
+                    dest.x = game.player[1].object.position.x;
+                    dest.y = game.player[1].object.position.y;
+                    DrawTexturePro(textship, source, dest, origin, (float)game.player[1].object.angle, GREEN);
+                    drawBorder(&game.player[1], textship, source, dest, origin, (float)game.player[1].object.angle, GREEN);
+                    DrawTriangleLines(game.player[1].cot1, game.player[1].cot2, game.player[1].cot3, WHITE);
+                    rangeCreator(game.player[0].cot1, game.player[0].cot2, &test, &test2);
+                    DrawLine(test.x,test.y,test2.x,test2.y,WHITE);
                 }
 
-                DrawText(TextFormat("x:%p, x2:%p",game.player[0],game.player[0] ), 100, 130, 30, WHITE);
-                
+              
+
                 break;
             }
         }
