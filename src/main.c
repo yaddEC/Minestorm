@@ -47,18 +47,17 @@ int main(void)
                 break;
             case 1:
                 gameUpdateAndDraw(&game);
-
                 dest.x = game.player[0].object.position.x;
                 dest.y = game.player[0].object.position.y;
                 DrawTexturePro(textship, source, dest, origin, (float)game.player[0].object.angle, RED);
-                drawBorder(&game.player, textship, source, dest, origin, (float)game.player[0].object.angle, WHITE);
+                drawBorder(&game.player[0], textship, source, dest, origin, (float)game.player[0].object.angle, RED);
                 DrawTriangleLines(game.player[0].cot1, game.player[0].cot2, game.player[0].cot3, WHITE);
                 if(game.coop==true)
                 {
                 dest.x = game.player[1].object.position.x;
                 dest.y = game.player[1].object.position.y;
                 DrawTexturePro(textship, source, dest, origin, (float)game.player[1].object.angle, GREEN);
-                drawBorder(&game.player, textship, source, dest, origin, (float)game.player[1].object.angle, WHITE);
+                drawBorder(&game.player[1], textship, source, dest, origin, (float)game.player[1].object.angle,GREEN);
                 DrawTriangleLines(game.player[1].cot1, game.player[1].cot2, game.player[1].cot3, WHITE);
 
                 }

@@ -40,22 +40,22 @@ void drawBorder(Triangle *player, Texture2D texture, Rectangle source, Rectangle
     if (player->object.position.x <= 85)
     {
         change.x = 515 + (player->object.position.x);
-        DrawTexturePro(texture, source, change, origin, (float)player->object.angle, RED);
+        DrawTexturePro(texture, source, change, origin, (float)player->object.angle, tint);
     }
     if (player->object.position.x >= 555)
     {
         change.x = player->object.position.x - 515;
-        DrawTexturePro(texture, source, change, origin, (float)player->object.angle, RED);
+        DrawTexturePro(texture, source, change, origin, (float)player->object.angle, tint);
     }
     if (player->object.position.y < 85)
     {
         change.y = 645 + (player->object.position.y);
-        DrawTexturePro(texture, source, change, origin, (float)player->object.angle, RED);
+        DrawTexturePro(texture, source, change, origin, (float)player->object.angle, tint);
     }
     if (player->object.position.y > 685)
     {
         change.y = player->object.position.y - 645;
-        DrawTexturePro(texture, source, change, origin, (float)player->object.angle, RED);
+        DrawTexturePro(texture, source, change, origin, (float)player->object.angle, tint);
     }
 }
 
