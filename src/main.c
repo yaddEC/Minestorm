@@ -32,8 +32,6 @@ void rangeCreator(Vec A, Vec B, Vec C, Vec *K, Vec *Bp)
 
 float minFinder(float k1, float k2, float k3)
 {
-   
-
     if (k1 < k2 && k1 < k3)
     {
         return k1;
@@ -48,7 +46,7 @@ float minFinder(float k1, float k2, float k3)
     }
 }
 
-bool colTriangle(Vec A1, Vec B1, Vec C1, Vec A2, Vec B2, Vec C2)
+bool checkColTriangle(Vec A1, Vec B1, Vec C1, Vec A2, Vec B2, Vec C2)
 {
     Vec K;
     Vec Bp;
@@ -66,23 +64,22 @@ bool colTriangle(Vec A1, Vec B1, Vec C1, Vec A2, Vec B2, Vec C2)
     float kmin;
 
     rangeCreator(A1, B1, C1, &K, &Bp);
-    DrawLine(A1.x, A1.y, K.x, K.y, ORANGE);
-    DrawLine(C1.x, C1.y, Bp.x, Bp.y, ORANGE);
+   
     projetOrtho(A1, B1, A2, &K, &Bp, &Mem);
 
     Kpb = negate(Bp, K);
     Memo = negate(Mem, Bp);
 
     k1 = Kpb.x / Memo.x;
-    DrawLine(Mem.x, Mem.y, A2.x, A2.y, RED);
+  
     projetOrtho(A1, B1, B2, &K, &Bp, &Mem2);
     Memo2 = negate(Mem2, Bp);
     k2 = Kpb.x / Memo2.x;
-    DrawLine(Mem2.x, Mem2.y, B2.x, B2.y, RED);
+   
     projetOrtho(A1, B1, C2, &K, &Bp, &Mem3);
     Memo3 = negate(Mem3, Bp);
     k3 = Kpb.x / Memo3.x;
-    DrawLine(Mem3.x, Mem3.y, C2.x, C2.y, RED);
+ 
     kmin = minFinder(k1, k2, k3);
     kmin = sqrt(kmin * kmin);
 
@@ -91,7 +88,16 @@ bool colTriangle(Vec A1, Vec B1, Vec C1, Vec A2, Vec B2, Vec C2)
     {
         return true;
     }
+
     return false;
+}
+bool colTriangle(Vec A1, Vec B1, Vec C1, Vec A2, Vec B2, Vec C2)
+{
+if( checkColTriangle(A1,B1,C1,A2,B2,C2) == true && checkColTriangle(B1,A1,C1,A2,B2,C2) == true && checkColTriangle(C1,B1,A1,A2,B2,C2) == true && checkColTriangle(B1,C1,A1,A2,B2,C2) == true && checkColTriangle(A1,C1,B1,A2,B2,C2) == true && checkColTriangle(C1,A1,B1,A2,B2,C2) == true)
+{
+    return true;
+}
+return false;
 }
 
 Vec negate(Vec lhs, Vec rhs)
@@ -121,8 +127,7 @@ int main(void)
     Rectangle source = {0.0f, 0.0f, (float)width, (float)height};
     Rectangle dest = {screenWidth / 2.0f, screenHeight / 2.0f, width / 3, height / 3};
     Vec origin = {(float)width / 6, (float)height / 6};
-    Vec test;
-    Vec test2;
+  
 
     Texture2D textback = LoadTextureFromImage(background);
     Texture2D textfore = LoadTextureFromImage(foreground);
@@ -169,14 +174,14 @@ int main(void)
                     }
 
                     drawBorder(&game.player[0], textship, source, dest, origin, (float)game.player[0].object.angle, RED);
-                    DrawTriangleLines(game.player[0].cot1, game.player[0].cot2, game.player[0].cot3, WHITE);
+                
                     dest.x = game.player[1].object.position.x;
                     dest.y = game.player[1].object.position.y;
                     DrawTexturePro(textship, source, dest, origin, (float)game.player[1].object.angle, GREEN);
                     drawBorder(&game.player[1], textship, source, dest, origin, (float)game.player[1].object.angle, GREEN);
-                    DrawTriangleLines(game.player[1].cot1, game.player[1].cot2, game.player[1].cot3, WHITE);
-                    rangeCreator(game.player[0].cot1, game.player[0].cot2, game.player[1].cot1, &test, &test2);
-                    DrawLine(test.x, test.y, test2.x, test2.y, WHITE);
+                 
+                  
+                   
                 }
                 else
                 {
@@ -184,7 +189,7 @@ int main(void)
                     dest.y = game.player[0].object.position.y;
                     DrawTexturePro(textship, source, dest, origin, (float)game.player[0].object.angle, WHITE);
                     drawBorder(&game.player[0], textship, source, dest, origin, (float)game.player[0].object.angle, WHITE);
-                    DrawTriangleLines(game.player[0].cot1, game.player[0].cot2, game.player[0].cot3, WHITE);
+                    
                 }
 
                 break;
