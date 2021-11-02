@@ -22,6 +22,7 @@ int main(void)
     Vec origin = {(float)width / 6, (float)height / 6};
     Vec test;
     Vec test2;
+    
     Texture2D textback = LoadTextureFromImage(background);
     Texture2D textfore = LoadTextureFromImage(foreground);
     UnloadImage(background);
@@ -49,23 +50,40 @@ int main(void)
                 break;
             case 1:
                 gameUpdateAndDraw(&game);
-                dest.x = game.player[0].object.position.x;
-                dest.y = game.player[0].object.position.y;
-                DrawTexturePro(textship, source, dest, origin, (float)game.player[0].object.angle, RED);
-                drawBorder(&game.player[0], textship, source, dest, origin, (float)game.player[0].object.angle, RED);
-                DrawTriangleLines(game.player[0].cot1, game.player[0].cot2, game.player[0].cot3, WHITE);
+
                 if (game.coop == true)
                 {
+                    dest.x = game.player[0].object.position.x;
+                    dest.y = game.player[0].object.position.y;
+                    if (colTriangle(game.player[0].cot1, game.player[0].cot2, game.player[0].cot3, game.player[1].cot1, game.player[1].cot2, game.player[1].cot3) == true)
+                    {
+                      
+                        DrawTexturePro(textship, source, dest, origin, (float)game.player[0].object.angle, YELLOW);
+                    }
+                    else
+                    {
+                        
+                        DrawTexturePro(textship, source, dest, origin, (float)game.player[0].object.angle, RED);
+                    }
+
+                    drawBorder(&game.player[0], textship, source, dest, origin, (float)game.player[0].object.angle, RED);
+                    DrawTriangleLines(game.player[0].cot1, game.player[0].cot2, game.player[0].cot3, WHITE);
                     dest.x = game.player[1].object.position.x;
                     dest.y = game.player[1].object.position.y;
                     DrawTexturePro(textship, source, dest, origin, (float)game.player[1].object.angle, GREEN);
                     drawBorder(&game.player[1], textship, source, dest, origin, (float)game.player[1].object.angle, GREEN);
                     DrawTriangleLines(game.player[1].cot1, game.player[1].cot2, game.player[1].cot3, WHITE);
-                    rangeCreator(game.player[0].cot1, game.player[0].cot2, &test, &test2);
-                    DrawLine(test.x,test.y,test2.x,test2.y,WHITE);
+                    rangeCreator(game.player[0].cot1, game.player[0].cot2, game.player[1].cot1, &test, &test2);
+                    DrawLine(test.x, test.y, test2.x, test2.y, WHITE);
                 }
-
-              
+                else
+                {
+                    dest.x = game.player[0].object.position.x;
+                    dest.y = game.player[0].object.position.y;
+                    DrawTexturePro(textship, source, dest, origin, (float)game.player[0].object.angle, WHITE);
+                    drawBorder(&game.player[0], textship, source, dest, origin, (float)game.player[0].object.angle, WHITE);
+                    DrawTriangleLines(game.player[0].cot1, game.player[0].cot2, game.player[0].cot3, WHITE);
+                }
 
                 break;
             }
