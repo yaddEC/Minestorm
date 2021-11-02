@@ -20,9 +20,17 @@ typedef struct Triangle
     Vec hit3;
 } Triangle;
 
+typedef struct Mine1
+{
+    Object object;
+    Triangle hitbox[4];
+    float size;
+} Mine1;
+
 typedef struct Game
 {
     Triangle player[2];
+    Mine1 ennemy[20];
     
     bool coop;
     
