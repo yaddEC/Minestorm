@@ -10,28 +10,64 @@ void playerInit(Triangle *player, int pos)
     player->object.position.x = 640 / 2.f + pos;
     player->object.position.y = 800 / 2 + pos;
     player->object.angle = 0;
-    player->object.t= 1;
+    player->object.t = 1;
     player->cot1.x = player->object.position.x;
     player->cot1.y = player->object.position.y - 25;
     player->cot2.x = player->object.position.x - 20;
     player->cot2.y = player->object.position.y + 22.5;
     player->cot3.x = player->object.position.x + 16;
     player->cot3.y = player->object.position.y + 22.5;
+    player->object.life = 3;
+    player->bulletCount = 0;
 }
 
 void gameInit(Game *game)
 {
-
-
-    if(game->coop==false){
-    playerInit(&game->player[0],0);
+    if (game->coop == false)
+    {
+        playerInit(&game->player[0], 0);
     }
     else
     {
-        playerInit(&game->player[0],-15);
-        playerInit(&game->player[1],15);
-    } 
-    
+        playerInit(&game->player[0], -15);
+        playerInit(&game->player[1], 15);
+    }
+}
+
+void addBullet(Triangle *player, Vec bulletPos)
+{
+    Bullet bullet = {0};
+    bullet.object.position = bulletPos;
+    bullet.object.angle = player->object.angle;
+    bullet.object.life = 1;
+    player->bullets[player->bulletCount] = bullet;
+    player->bulletCount += 1;
+}
+
+/*void remBullet(Triangle *player, Vec bulletPos)
+{
+    player->bulletCount =1;
+    bullet.object.position = bulletPos;
+    bullet.object.angle = player->object.angle;
+    bullet.object.life = 1;
+    player->bullets[player->bulletCount] = bullet;
+}*/
+
+void bulletUpdate(Bullet* bullet)
+{
+    if (bullet->object.life > 0)
+    {
+        float xVec = sin(degToRad(bullet->object.angle));
+        float yVec = cos(degToRad(bullet->object.angle));
+        float magnitude = sqrt(xVec * xVec + yVec * yVec);
+        float uVecX = xVec / magnitude;
+        float uVecY = yVec / magnitude;
+
+        bullet->object.position.x += uVecX * 10;
+        bullet->object.position.y -= uVecY * 10;
+        DrawText(TextFormat("xbull = %f", bullet->object.position.x), 150, 100, 20, WHITE);
+        DrawCircle(bullet->object.position.x, bullet->object.position.y, 3, YELLOW);
+    }
 }
 
 void drawBorder(Triangle *player, Texture2D texture, Rectangle source, Rectangle dest, Vec origin, float rotation, Color tint)
@@ -67,7 +103,7 @@ void rotateTriangle(Triangle *triangle)
     triangle->cot3 = rotateVec(triangle->hit3, triangle->object.position, triangle->object.angle);
 }
 
-void playerUpdate(Triangle *player, Game *game, int left,int right,int up)
+void playerUpdate(Triangle *player, Game *game, int left, int right, int up, int shoot)
 {
     float xVec = sin(degToRad(player->object.angle));
     float yVec = cos(degToRad(player->object.angle));
@@ -101,6 +137,10 @@ void playerUpdate(Triangle *player, Game *game, int left,int right,int up)
     {
         player->object.position.y = 40;
     }
+    if (IsKeyPressed(shoot) && player->bulletCount < 6)
+    {
+        addBullet(player, player->cot1);
+    }
     if (IsKeyDown(left))
     {
         player->object.angle -= 2.5;
@@ -131,15 +171,28 @@ void playerUpdate(Triangle *player, Game *game, int left,int right,int up)
         player->object.position.x += (player->object.dir.x * (player->object.t / 10));
         player->object.position.y -= (player->object.dir.y * (player->object.t / 10));
     }
+    for (int i = 0; i < player->bulletCount; i++)
+    {
+        bulletUpdate(&player->bullets[i]);
+    }
 }
 
 void gameUpdateAndDraw(Game *game)
 {
 
-    playerUpdate(&game->player[0], game,KEY_D,KEY_G,KEY_R);
-    if(game->coop==true)
+    playerUpdate(&game->player[0], game, KEY_D, KEY_G, KEY_R, KEY_LEFT_ALT);
+
+    if (game->coop == true)
     {
-    playerUpdate(&game->player[1], game,KEY_J,KEY_L,KEY_I);
+        playerUpdate(&game->player[1], game, KEY_J, KEY_L, KEY_I, KEY_LEFT_CONTROL);
+        //coll(player1, player2)
+        //coll(player2, player1)
+        //loop coll (player 1, mine[i])
+        //loop coll (player 2, mine[i])
+    }
+    else
+    {
+        //loop coll (player 1, mine[i])
     }
 }
 
@@ -148,12 +201,12 @@ int gameUI(Game *game)
 
     if (pause == 0)
     {
-        
+
         if (IsKeyPressed(KEY_F))
         {
             pause++;
             game->coop = false;
-             gameInit(game);
+            gameInit(game);
         }
 
         if (IsKeyPressed(KEY_K))
