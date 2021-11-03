@@ -22,7 +22,7 @@ int main(void)
     UnloadImage(assetmine);
     Rectangle source = {0.0f, 0.0f, (float)width, (float)height};
     Rectangle source2 = {0.0f, 0.0f, (float)textmine1.width, (float)textmine1.height};
-    Rectangle dest = {screenWidth / 2.0f, screenHeight / 2.0f, width / 3, height / 3};
+    Rectangle dest = {screenWidth / 2.0f, screenHeight / 2.0f, width / 3, height / 3};// reprendre ici
     Vec origin = {(float)width / 6, (float)height / 6};
     Texture2D textback = LoadTextureFromImage(background);
     Texture2D textfore = LoadTextureFromImage(foreground);
