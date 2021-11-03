@@ -12,6 +12,7 @@ typedef struct Object
 typedef struct Bullet
 {
     Object object;
+    int delay;
 } Bullet;
 
 typedef struct Triangle
