@@ -4,11 +4,12 @@
 #include "game.h"
 
 static int pause = 0;
+static int del = 0;
 void playerInit(Triangle *player, int pos)
 {
     player->object.position.x = 640 / 2.f + pos * 2;
     player->object.position.y = 800 / 2;
-    player->object.angle = 0;
+    player->object.angle = 1;
     player->object.t = 1;
     player->cot1.x = player->object.position.x;
     player->cot1.y = player->object.position.y - 25;
@@ -16,7 +17,7 @@ void playerInit(Triangle *player, int pos)
     player->cot2.y = player->object.position.y + 22.5;
     player->cot3.x = player->object.position.x + 16;
     player->cot3.y = player->object.position.y + 22.5;
-    player->object.life = 3;
+    player->object.life = 5;
     player->bulletCount = 0;
 }
 
@@ -64,8 +65,11 @@ void ennemyInit(Mine1 *ennemy, float size, float x, float y)
     ennemy->object.life = 1;
 }
 
-void gameInit(Game *game)
+void gameInit(Game *game, bool coop)
 {
+    Game game1 = {0};
+    *game = game1;
+    game->coop = coop;
     if (game->coop == false)
     {
         playerInit(&game->player[0], 0);
@@ -84,6 +88,20 @@ void gameInit(Game *game)
     }
 }
 
+bool noMineLeft(Game *game)
+{
+    for (int i = 0; i < 35; i++)
+    {
+        if (game->ennemy[i].object.life > 0)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+
+
 void addBullet(Triangle *player, Vec bulletPos)
 {
     Bullet bullet = {0};
@@ -101,6 +119,12 @@ void addBullet(Triangle *player, Vec bulletPos)
             break;
         }
     }
+}
+
+void takingDMG(Triangle *player)
+{
+    player->object.life -= 1;
+    player->invincibilityFrame = 200;
 }
 
 void remBullet(Triangle *player, Bullet *bullet)
@@ -143,6 +167,27 @@ void bulletUpdate(Bullet *bullet)
             bullet->object.life = 0;
         }
     }
+}
+
+bool colBullMine(Bullet bullet, Mine1 ennemy)
+{
+    if (colPointTriangle(bullet.object.position, ennemy.hitbox[0].cot1, ennemy.hitbox[0].cot2, ennemy.hitbox[0].cot3) == true)
+    {
+        return true;
+    }
+    if (colPointTriangle(bullet.object.position, ennemy.hitbox[1].cot1, ennemy.hitbox[1].cot2, ennemy.hitbox[1].cot3) == true)
+    {
+        return true;
+    }
+    if (colPointTriangle(bullet.object.position, ennemy.hitbox[2].cot1, ennemy.hitbox[2].cot2, ennemy.hitbox[2].cot3) == true)
+    {
+        return true;
+    }
+    if (colPointTriangle(bullet.object.position, ennemy.hitbox[3].cot1, ennemy.hitbox[3].cot2, ennemy.hitbox[3].cot3) == true)
+    {
+        return true;
+    }
+    return false;
 }
 
 void drawBorder(Triangle *player, Texture2D texture, Rectangle source, Rectangle dest, Vec origin, float rotation, Color tint)
@@ -270,80 +315,137 @@ bool colShipMine1(Triangle *player, Mine1 *ennemy)
     return false;
 }
 
-void playerUpdate(Triangle *player, Game *game, int left, int right, int up, int shoot)
+void isGameOver(Game *game)
 {
-    float xVec = sin(degToRad(player->object.angle));
-    float yVec = cos(degToRad(player->object.angle));
-
-    player->hit1.x = player->object.position.x;
-    player->hit1.y = player->object.position.y - 25;
-    player->hit2.x = player->object.position.x - 20;
-    player->hit2.y = player->object.position.y + 22.5;
-    player->hit3.x = player->object.position.x + 16;
-    player->hit3.y = player->object.position.y + 22.5;
-
-    rotateTriangle(player);
-
-    if (player->object.position.x < 40)
-    {
-        player->object.position.x = 555;
-    }
-    if (player->object.position.x > 600)
-    {
-        player->object.position.x = 85;
-    }
-
-    if (player->object.position.y < 40)
-    {
-        player->object.position.y = 685;
-    }
-    if (player->object.position.y > 685)
-    {
-        player->object.position.y = 40;
-    }
-    if (IsKeyPressed(shoot) && player->bulletCount < 6)
-    {
-        addBullet(player, player->cot1);
-    }
-    if (IsKeyDown(left))
-    {
-        player->object.angle -= 1.75;
-    }
-    if (IsKeyDown(right))
-    {
-        player->object.angle += 1.75;
-    }
-    if (IsKeyDown(up))
-    {
-        if (player->object.t < 80)
+    
+    
+        if (noMineLeft(game) == true)
         {
-            player->object.t++;
-            player->object.t++;
-        }
-        player->object.position.x += (xVec * (player->object.t / 20));
-        player->object.position.y -= (yVec * (player->object.t / 20));
-        player->object.dir.x = xVec;
-        player->object.dir.y = yVec;
-    }
-    else
-    {
-        if (player->object.t > 0)
-        {
-            player->object.t--;
+            del++;
+            DrawText(TextFormat("YOU WIN"), 250, 400, 30, YELLOW);
+            if (del > 300)
+            {
+                pause = 0;
+                del = 0;
+            }
         }
 
-        player->object.position.x += (player->object.dir.x * (player->object.t / 20));
-        player->object.position.y -= (player->object.dir.y * (player->object.t / 20));
-    }
+        if (game->coop == true)
+        {
+            if (game->player[0].object.life <= 0 && game->player[1].object.life <= 0)
+            {
+                DrawText(TextFormat("GAME OVER"), 220, 400, 30, RED);
+                del++;
 
-    for (int i = 5; i > 0; i--)
+                if (del > 300)
+                {
+                    pause = 0;
+                    del = 0;
+                }
+            }
+        }
+        else if (game->coop == false)
+        {
+            if (game->player[0].object.life <= 0)
+            {
+                DrawText(TextFormat("GAME OVER"), 220, 400, 30, RED);
+                del++;
+
+                if (del > 300)
+                {
+                    pause = 0;
+                    del = 0;
+                }
+            }
+        }
+    
+}
+
+void playerUpdate(Triangle *player, Game *game, int left, int right, int up, int shoot, int tp1, int tp2)
+{
+    if (player->object.life > 0)
     {
+        float xVec = sin(degToRad(player->object.angle));
+        float yVec = cos(degToRad(player->object.angle));
 
-        bulletUpdate(&player->bullets[i]);
-        if (player->bullets[i].object.life == 0)
+        player->hit1.x = player->object.position.x;
+        player->hit1.y = player->object.position.y - 25;
+        player->hit2.x = player->object.position.x - 20;
+        player->hit2.y = player->object.position.y + 22.5;
+        player->hit3.x = player->object.position.x + 16;
+        player->hit3.y = player->object.position.y + 22.5;
+        player->invincibilityFrame--;
+
+        rotateTriangle(player);
+
+        if (player->object.position.x < 40)
+        {
+            player->object.position.x = 555;
+        }
+        if (player->object.position.x > 600)
+        {
+            player->object.position.x = 85;
+        }
+
+        if (player->object.position.y < 40)
+        {
+            player->object.position.y = 685;
+        }
+        if (player->object.position.y > 685)
+        {
+            player->object.position.y = 40;
+        }
+
+        if (IsKeyPressed(tp1) || IsKeyPressed(tp2) )
+        {
+             player->object.position.x = GetRandomValue(40, 600);
+            player->object.position.y = GetRandomValue(40, 685);
+        }
+
+        if (IsKeyPressed(shoot) && player->bulletCount < 6)
+        {
+            addBullet(player, player->cot1);
+        }
+        if (IsKeyDown(left))
+        {
+            player->object.angle -= 1.75;
+        }
+        if (IsKeyDown(right))
+        {
+            player->object.angle += 1.75;
+        }
+        if (IsKeyDown(up))
+        {
+            if (player->object.t < 80)
+            {
+                player->object.t++;
+                player->object.t++;
+            }
+            player->object.position.x += (xVec * (player->object.t / 20));
+            player->object.position.y -= (yVec * (player->object.t / 20));
+            player->object.dir.x = xVec;
+            player->object.dir.y = yVec;
+        }
+        else
+        {
+            if (player->object.t > 0)
+            {
+                player->object.t--;
+            }
+
+            player->object.position.x += (player->object.dir.x * (player->object.t / 20));
+            player->object.position.y -= (player->object.dir.y * (player->object.t / 20));
+        }
+
+        for (int i = 5; i > 0; i--)
         {
 
-            remBullet(player, &player->bullets[i]);
+            bulletUpdate(&player->bullets[i]);
+            if (player->bullets[i].object.life == 0)
+            {
+
+                remBullet(player, &player->bullets[i]);
+            }
         }
     }
 }
@@ -354,18 +456,19 @@ void mineDest(Mine1 *ennemy, Game *game, int i)
     if (ennemy->size == 1)
     {
         ennemyInit(&game->ennemy[i + 1], 2, ennemy->object.position.x, ennemy->object.position.y);
-       ennemyInit(&game->ennemy[i + 2], 2, ennemy->object.position.x, ennemy->object.position.y);
+        ennemyInit(&game->ennemy[i + 2], 2, ennemy->object.position.x, ennemy->object.position.y);
     }
     if (ennemy->size == 2)
     {
         ennemyInit(&game->ennemy[i + 1], 3, ennemy->object.position.x, ennemy->object.position.y);
-       ennemyInit(&game->ennemy[i + 2], 3, ennemy->object.position.x, ennemy->object.position.y);
+        ennemyInit(&game->ennemy[i + 2], 3, ennemy->object.position.x, ennemy->object.position.y);
     }
 }
 void gameUpdateAndDraw(Game *game)
 {
 
-    playerUpdate(&game->player[0], game, KEY_D, KEY_G, KEY_R, KEY_F);
+    
+    playerUpdate(&game->player[0], game, KEY_D, KEY_G, KEY_R, KEY_F,KEY_E,KEY_T);
 
     for (int i = 0; i < 35; i++)
     {
@@ -373,19 +476,71 @@ void gameUpdateAndDraw(Game *game)
     }
     if (game->coop == true)
     {
-        playerUpdate(&game->player[1], game, KEY_J, KEY_L, KEY_I, KEY_K);
-        //coll(player1, player2)
-        //coll(player2, player1)
-        //loop if coll (player 1, mine[i]) {mineDest(mine[i],game,i)}
-        //loop coll (player 2, mine[i])
+        playerUpdate(&game->player[1], game, KEY_J, KEY_L, KEY_I, KEY_K,KEY_U,KEY_O);
+        if (colTriangle(game->player[0].cot1, game->player[0].cot2, game->player[0].cot3, game->player[1].cot1, game->player[1].cot2, game->player[1].cot3) == true && (game->player[0].object.life > 0 && game->player[1].object.life > 0))
+        {
+            takingDMG(&game->player[1]);
+            takingDMG(&game->player[0]);
+        }
+        for (int j = 0; j < 5; j++)
+        {
+            if (colPointTriangle(game->player[0].bullets[j + 1].object.position, game->player[1].cot1, game->player[1].cot2, game->player[1].cot3) == true && game->player[0].bullets[j + 1].object.life > 0 && game->player[1].object.life>0 && game->player[1].invincibilityFrame<0)
+            {
+                remBullet(&game->player[0], &game->player[0].bullets[j + 1]);
+                takingDMG(&game->player[1]);
+            }
+
+            if (colPointTriangle(game->player[1].bullets[j + 1].object.position, game->player[0].cot1, game->player[0].cot2, game->player[0].cot3) == true && game->player[1].bullets[j + 1].object.life > 0  && game->player[0].object.life>0 && game->player[0].invincibilityFrame<0)
+            {
+                remBullet(&game->player[1], &game->player[1].bullets[j + 1]);
+                takingDMG(&game->player[0]);
+            }
+        }
+
+        for (int i = 0; i < 35; i++)
+        {
+            if (game->ennemy[i].object.life > 0 && colShipMine1(&game->player[0], &game->ennemy[i]) == true && game->player[0].invincibilityFrame < 0)
+            {
+                takingDMG(&game->player[0]);
+            }
+
+            if (game->ennemy[i].object.life > 0 && colShipMine1(&game->player[1], &game->ennemy[i]) == true && game->player[1].invincibilityFrame < 0)
+            {
+                takingDMG(&game->player[1]);
+            }
+
+            for (int j = 0; j < 5; j++)
+            {
+                if (colBullMine(game->player[0].bullets[j + 1], game->ennemy[i]) == true && game->ennemy[i].object.life > 0 && game->player[0].bullets[j + 1].object.life > 0)
+                {
+                    mineDest(&game->ennemy[i], game, i);
+                    remBullet(&game->player[0], &game->player[0].bullets[j + 1]);
+                }
+
+                if (colBullMine(game->player[1].bullets[j + 1], game->ennemy[i]) == true && game->ennemy[i].object.life > 0 && game->player[1].bullets[j + 1].object.life > 0)
+                {
+                    mineDest(&game->ennemy[i], game, i);
+                    remBullet(&game->player[1], &game->player[1].bullets[j + 1]);
+                }
+            }
+        }
     }
     else
     {
         for (int i = 0; i < 35; i++)
         {
-            if (game->ennemy[i].object.life > 0 && colShipMine1(&game->player[0], &game->ennemy[i]) == true)
+            if (game->ennemy[i].object.life > 0 && colShipMine1(&game->player[0], &game->ennemy[i]) == true && game->player[0].invincibilityFrame < 0)
             {
-                mineDest(&game->ennemy[i], game, i);
+                takingDMG(&game->player[0]);
+            }
+
+            for (int j = 0; j < 5; j++)
+            {
+                if (colBullMine(game->player[0].bullets[j + 1], game->ennemy[i]) == true && game->ennemy[i].object.life > 0 && game->player[0].bullets[j + 1].object.life > 0)
+                {
+                    mineDest(&game->ennemy[i], game, i);
+                    remBullet(&game->player[0], &game->player[0].bullets[j + 1]);
+                }
             }
         }
     }
@@ -399,16 +554,18 @@ int gameUI(Game *game)
 
         if (IsKeyPressed(KEY_F))
         {
+
             pause++;
-            game->coop = false;
-            gameInit(game);
+
+            gameInit(game, false);
         }
 
         if (IsKeyPressed(KEY_K))
         {
+
             pause++;
-            game->coop = true;
-            gameInit(game);
+
+            gameInit(game, true);
         }
     }
 

@@ -19,6 +19,7 @@ typedef struct Triangle
 {
     Object object;
     int bulletCount;
+    int invincibilityFrame;
     Bullet bullets[6];
     Vec cot1;
     Vec cot2;
@@ -43,8 +44,9 @@ typedef struct Game
 
 } Game;
 
-void gameInit(Game *game);
+void gameInit(Game *game, bool coop);
+bool noMineLeft(Game *game);
 void gameUpdateAndDraw(Game *game);
-bool gameIsOver(Game *game);
+void isGameOver(Game *game);
 void drawBorder(Triangle *player, Texture2D texture, Rectangle source, Rectangle dest, Vec origin, float rotation, Color tint);
 int gameUI(Game *game);

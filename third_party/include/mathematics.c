@@ -52,6 +52,35 @@ float degToRad(float deg)
     return deg * (PI / 180);
 }
 
+bool colPointTriangle(Vec P, Vec A, Vec B, Vec C)
+{
+    float d;
+    Vec AB = negate(B, A);
+    Vec BC = negate(C, B);
+    Vec AC = negate(C, A);
+    Vec AP = negate(P, A);
+    Vec BP = negate(P, B);
+    Vec CP = negate(P, C);
+    d = (AB.x * AP.y - AP.x * AB.y);
+    if (d < 0)
+    {
+        
+        d = (BC.x * BP.y - BP.x * BC.y);
+        if (d < 0)
+        {
+            d = (AC.x * CP.y - CP.x * AC.y);
+        if (d> 0)
+        {
+            return true;
+        }
+        }
+    }
+return false;
+}
+
+
+
+
 Vec rotateVec(Vec tor, Vec origin, float angle)
 {
     Vec tor2;
@@ -145,7 +174,6 @@ bool checkColTriangle(Vec A1, Vec B1, Vec C1, Vec A2, Vec B2, Vec C2)
     kmin = minFinder(k1, k2, k3);
     kmin = sqrt(kmin * kmin);
 
-   
     if (kmin >= 1)
     {
         return true;

@@ -18,5 +18,7 @@ float fsin(float a);
 float ftan(float a);
 float degToRad(float deg);
 Vec rotateVec (Vec tor, Vec origin, float angle );
+bool colPointTriangle(Vec P, Vec A, Vec B, Vec C);
+bool colTriangle(Vec A1, Vec B1, Vec C1, Vec A2, Vec B2, Vec C2);
 
 Vec negate(Vec lhs, Vec rhs);

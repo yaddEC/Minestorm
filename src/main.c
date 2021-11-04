@@ -18,24 +18,22 @@ int main(void)
     int width = textship.width / 4;
     int height = textship.height / 2;
 
-    UnloadImage(assets);
-    UnloadImage(assetmine);
+    
     Rectangle source = {0.0f, 0.0f, (float)width, (float)height};
     Rectangle source2 = {0.0f, 0.0f, (float)textmine1.width, (float)textmine1.height};
     Rectangle source22 = {0.0f, 0.0f, (float)textmine1.width, (float)textmine1.height};
     Rectangle source23 = {0.0f, 0.0f, (float)textmine1.width, (float)textmine1.height};
 
     Rectangle dest = {screenWidth / 2.0f, screenHeight / 2.0f, width / 3, height / 3};
-    Rectangle dest2 = {screenWidth * 2.0f, (screenHeight *2.0f), (width / 3) / 2, (height / 3) / 2};
+    Rectangle dest2 = {screenWidth * 2.0f, (screenHeight * 2.0f), (width / 3) / 2, (height / 3) / 2};
     Rectangle dest3 = {screenWidth / 2.0f, screenHeight / 2.0f, (width / 3) / 3, (height / 3) / 3};
 
     Vec origin = {(float)width / 6, (float)height / 6};
-    Vec origin2 = {((float)width / 6)/2, ((float)height / 6)/2};
-    Vec origin3 = {((float)width / 6)/3, ((float)height / 6)/3};
+    Vec origin2 = {((float)width / 6) / 2, ((float)height / 6) / 2};
+    Vec origin3 = {((float)width / 6) / 3, ((float)height / 6) / 3};
     Texture2D textback = LoadTextureFromImage(background);
     Texture2D textfore = LoadTextureFromImage(foreground);
-    UnloadImage(background);
-    UnloadImage(foreground);
+   
     while (!WindowShouldClose())
     {
 
@@ -45,8 +43,9 @@ int main(void)
         ui = gameUI(&game);
         if (ui == 0)
         {
-            DrawText(TextFormat("Mode solo : Appuyez sur F"), 100, 130, 30, WHITE);
-            DrawText(TextFormat("Mode coop : Appuyez sur K"), 100, 170, 30, WHITE);
+            DrawText(TextFormat("SINGLEPLAYER: PRESS F"), 100, 130, 30, WHITE);
+            DrawText(TextFormat("MULTIPLAYER : PRESS K"), 100, 170, 30, WHITE);
+            DrawText(TextFormat("QUIT : PRESS ESCAPE"), 100, 210, 30, WHITE);
         }
         else
         {
@@ -57,27 +56,86 @@ int main(void)
                 DrawText(TextFormat("PAUSE"), 270, screenHeight / 2.0f, 30, WHITE);
                 break;
             case 1:
-                gameUpdateAndDraw(&game);
 
+                isGameOver(&game);
+                gameUpdateAndDraw(&game);
+               
                 if (game.coop == true)
                 {
+                    if (game.player[0].object.life > 0)
+                    {
+                        DrawText(TextFormat("life: %d", game.player[0].object.life), 70, 70, 20, ORANGE);
+                    }
+                    else
+                    {
+                        DrawText(TextFormat("life: 0"), 70, 70, 20, ORANGE);
+                    }
+
                     dest.x = game.player[0].object.position.x;
                     dest.y = game.player[0].object.position.y;
 
-                    DrawTexturePro(textship, source, dest, origin, (float)game.player[0].object.angle, BLUE);
+                    if (game.player[1].object.life > 0)
+                    {
+                        DrawText(TextFormat("life: %d", game.player[1].object.life), 520, 70, 20, BLUE);
+                    }
+                    else
+                    {
+                        DrawText(TextFormat("life: 0"), 520, 70, 20, BLUE);
+                    }
+                    if (game.player[0].invincibilityFrame < 0)
+                    {
+                        DrawTexturePro(textship, source, dest, origin, (float)game.player[0].object.angle, BLUE);
+                    }
+                    else
+                    {
+                        if (game.player[0].invincibilityFrame % 3 == 0)
+                        {
+                            DrawTexturePro(textship, source, dest, origin, (float)game.player[0].object.angle, BLUE);
+                        }
+                    }
 
                     drawBorder(&game.player[0], textship, source, dest, origin, (float)game.player[0].object.angle, BLUE);
 
                     dest.x = game.player[1].object.position.x;
                     dest.y = game.player[1].object.position.y;
-                    DrawTexturePro(textship, source, dest, origin, (float)game.player[1].object.angle, ORANGE);
+
+                    if (game.player[1].invincibilityFrame < 0)
+                    {
+                        DrawTexturePro(textship, source, dest, origin, (float)game.player[1].object.angle, ORANGE);
+                    }
+                    else
+                    {
+                        if (game.player[1].invincibilityFrame % 3 == 0)
+                        {
+                            DrawTexturePro(textship, source, dest, origin, (float)game.player[1].object.angle, ORANGE);
+                        }
+                    }
                     drawBorder(&game.player[1], textship, source, dest, origin, (float)game.player[1].object.angle, ORANGE);
                 }
                 else
                 {
                     dest.x = game.player[0].object.position.x;
                     dest.y = game.player[0].object.position.y;
-                    DrawTexturePro(textship, source, dest, origin, (float)game.player[0].object.angle, YELLOW);
+
+                    if (game.player[0].object.life > 0)
+                    {
+                        DrawText(TextFormat("life: %d", game.player[0].object.life), 70, 70, 20, YELLOW);
+                    }
+                    else
+                    {
+                        DrawText(TextFormat("life: 0"), 70, 70, 20, YELLOW);
+                    }
+                    if (game.player[0].invincibilityFrame < 0)
+                    {
+                        DrawTexturePro(textship, source, dest, origin, (float)game.player[0].object.angle, YELLOW);
+                    }
+                    else
+                    {
+                        if (game.player[0].invincibilityFrame % 3 == 0)
+                        {
+                            DrawTexturePro(textship, source, dest, origin, (float)game.player[0].object.angle, YELLOW);
+                        }
+                    }
                     drawBorder(&game.player[0], textship, source, dest, origin, (float)game.player[0].object.angle, YELLOW);
                 }
 
@@ -92,7 +150,6 @@ int main(void)
                             dest.y = game.ennemy[i].object.position.y;
 
                             DrawTexturePro(textmine1, source2, dest, origin, (float)game.ennemy[i].object.angle, WHITE);
-               
                         }
                         else if (game.ennemy[i].size == 2)
                         {
@@ -101,7 +158,6 @@ int main(void)
                             dest2.y = game.ennemy[i].object.position.y;
 
                             DrawTexturePro(textmine1, source22, dest2, origin2, (float)game.ennemy[i].object.angle, WHITE);
-                      
                         }
                         else if (game.ennemy[i].size == 3)
                         {
@@ -110,7 +166,6 @@ int main(void)
                             dest3.y = game.ennemy[i].object.position.y;
 
                             DrawTexturePro(textmine1, source23, dest3, origin3, (float)game.ennemy[i].object.angle, WHITE);
-                     
                         }
                     }
                 }
@@ -124,6 +179,11 @@ int main(void)
     UnloadTexture(textback);
     UnloadTexture(textfore);
     UnloadTexture(textship);
+    UnloadTexture(textmine1);
+    UnloadImage(background);
+    UnloadImage(foreground);
+    UnloadImage(assets);
+    UnloadImage(assetmine);
     CloseWindow();
     return 0;
 }
