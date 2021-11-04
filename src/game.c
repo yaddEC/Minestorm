@@ -6,8 +6,8 @@
 static int pause = 0;
 void playerInit(Triangle *player, int pos)
 {
-    player->object.position.x = 640 / 2.f + pos*2;
-    player->object.position.y = 800 / 2 ;
+    player->object.position.x = 640 / 2.f + pos * 2;
+    player->object.position.y = 800 / 2;
     player->object.angle = 0;
     player->object.t = 1;
     player->cot1.x = player->object.position.x;
@@ -20,54 +20,48 @@ void playerInit(Triangle *player, int pos)
     player->bulletCount = 0;
 }
 
-void ennemyInit(Mine1 *ennemy,float size)
+void ennemyInit(Mine1 *ennemy, float size, float x, float y)
 {
-    float x = GetRandomValue(40,600);
-    float y = GetRandomValue(40,685);
-
-    while (y == 400)
+    if (x && y == 9999)
     {
-        y = GetRandomValue(40,685);
+        x = GetRandomValue(40, 600);
+        y = GetRandomValue(40, 685);
+        while (y == 400)
+        {
+            y = GetRandomValue(40, 685);
+        }
     }
-
+    ennemy->size = size;
     ennemy->object.position.x = x;
     ennemy->object.position.y = y;
-    ennemy->hitbox[0].cot1.x = (ennemy->object.position.x)/size;
-    ennemy->hitbox[0].cot1.y = (ennemy->object.position.y - 44)/size;
-    ennemy->hitbox[0].cot2.x = (ennemy->object.position.x - 14)/size;
-    ennemy->hitbox[0].cot2.y = (ennemy->object.position.y + 5)/size;
-    ennemy->hitbox[0].cot3.x = (ennemy->object.position.x + 14)/size;
-    ennemy->hitbox[0].cot3.y = (ennemy->object.position.y + 5)/size;
-    
-    ennemy->hitbox[1].cot1.x = (ennemy->object.position.x - 14)/size;
-    ennemy->hitbox[1].cot1.y = (ennemy->object.position.y + 5)/size;
-    ennemy->hitbox[1].cot2.x = (ennemy->object.position.x - 43)/size;
-    ennemy->hitbox[1].cot2.y = (ennemy->object.position.y + 43)/size;
-    ennemy->hitbox[1].cot3.x = (ennemy->object.position.x )/size;
-    ennemy->hitbox[1].cot3.y = (ennemy->object.position.y +32)/size;
+    ennemy->hitbox[0].cot1.x = (ennemy->object.position.x);
+    ennemy->hitbox[0].cot1.y = (ennemy->object.position.y - 44 / ennemy->size);
+    ennemy->hitbox[0].cot2.x = (ennemy->object.position.x - 14 / ennemy->size);
+    ennemy->hitbox[0].cot2.y = (ennemy->object.position.y + 5 / ennemy->size);
+    ennemy->hitbox[0].cot3.x = (ennemy->object.position.x + 14 / ennemy->size);
+    ennemy->hitbox[0].cot3.y = (ennemy->object.position.y + 5 / ennemy->size);
+    ennemy->hitbox[1].cot1.x = (ennemy->object.position.x - 14 / ennemy->size);
+    ennemy->hitbox[1].cot1.y = (ennemy->object.position.y + 5 / ennemy->size);
+    ennemy->hitbox[1].cot2.x = (ennemy->object.position.x - 43 / ennemy->size);
+    ennemy->hitbox[1].cot2.y = (ennemy->object.position.y + 43 / ennemy->size);
+    ennemy->hitbox[1].cot3.x = (ennemy->object.position.x);
+    ennemy->hitbox[1].cot3.y = (ennemy->object.position.y + 32 / ennemy->size);
+    ennemy->hitbox[2].cot1.x = (ennemy->object.position.x + 14 / ennemy->size);
+    ennemy->hitbox[2].cot1.y = (ennemy->object.position.y + 5 / ennemy->size);
+    ennemy->hitbox[2].cot2.x = (ennemy->object.position.x);
+    ennemy->hitbox[2].cot2.y = (ennemy->object.position.y + 32 / ennemy->size);
+    ennemy->hitbox[2].cot3.x = (ennemy->object.position.x + 43 / ennemy->size);
+    ennemy->hitbox[2].cot3.y = (ennemy->object.position.y + 43 / ennemy->size);
+    ennemy->hitbox[3].cot1.x = (ennemy->object.position.x - 14 / ennemy->size);
+    ennemy->hitbox[3].cot1.y = (ennemy->object.position.y + 5 / ennemy->size);
+    ennemy->hitbox[3].cot2.x = (ennemy->object.position.x + 14 / ennemy->size);
+    ennemy->hitbox[3].cot2.y = (ennemy->object.position.y + 5 / ennemy->size);
+    ennemy->hitbox[3].cot3.x = (ennemy->object.position.x);
+    ennemy->hitbox[3].cot3.y = (ennemy->object.position.y + 32 / ennemy->size);
 
-    ennemy->hitbox[2].cot1.x = (ennemy->object.position.x + 14)/size;
-    ennemy->hitbox[2].cot1.y = (ennemy->object.position.y + 5)/size;
-    ennemy->hitbox[2].cot2.x = (ennemy->object.position.x )/size;
-    ennemy->hitbox[2].cot2.y = (ennemy->object.position.y +32)/size;
-    ennemy->hitbox[2].cot3.x = (ennemy->object.position.x +43)/size;
-    ennemy->hitbox[2].cot3.y = (ennemy->object.position.y +43)/size;
-
-    ennemy->hitbox[3].cot1.x = (ennemy->object.position.x - 14)/size;
-    ennemy->hitbox[3].cot1.y = (ennemy->object.position.y + 5)/size;
-    ennemy->hitbox[3].cot2.x = (ennemy->object.position.x + 14)/size;
-    ennemy->hitbox[3].cot2.y = (ennemy->object.position.y + 5)/size;
-    ennemy->hitbox[3].cot3.x = (ennemy->object.position.x )/size;
-    ennemy->hitbox[3].cot3.y = (ennemy->object.position.y +32)/size;
-
-    ennemy->object.angle = GetRandomValue(0,360);
-    ennemy->object.dir.x = GetRandomValue(0,360);
+    ennemy->object.angle = GetRandomValue(0, 360);
+    ennemy->object.dir.x = GetRandomValue(0, 360);
     ennemy->object.life = 1;
-    ennemy->size = size;
-
-
-
-
 }
 
 void gameInit(Game *game)
@@ -83,12 +77,11 @@ void gameInit(Game *game)
     }
 
     int i = 0;
-    while(i<35){
-    ennemyInit(&game->ennemy[i],1);
-    i=i+7;
+    while (i < 35)
+    {
+        ennemyInit(&game->ennemy[i], 1, 9999, 9999);
+        i = i + 7;
     }
-    
-
 }
 
 void addBullet(Triangle *player, Vec bulletPos)
@@ -115,7 +108,6 @@ void remBullet(Triangle *player, Bullet *bullet)
     player->bulletCount--;
     bullet->object.life = 0;
 }
-
 
 void bulletUpdate(Bullet *bullet)
 {
@@ -186,55 +178,50 @@ void rotateTriangle(Triangle *triangle)
     triangle->cot3 = rotateVec(triangle->hit3, triangle->object.position, triangle->object.angle);
 }
 
-void rotateTriangleMine(Triangle *triangle, Vec pos, float angle)
+void rotateTriangleMine(Triangle *triangle, Vec pos, float angle, float size)
 {
 
-    triangle->cot1 = rotateVec(triangle->hit1,pos, angle);
-    triangle->cot2 = rotateVec(triangle->hit2,pos, angle);
-    triangle->cot3 = rotateVec(triangle->hit3,pos, angle);
+    triangle->cot1 = rotateVec(triangle->hit1, pos, angle);
+    triangle->cot2 = rotateVec(triangle->hit2, pos, angle);
+    triangle->cot3 = rotateVec(triangle->hit3, pos, angle);
 }
 
 void ennemyUpdate(Mine1 *ennemy)
 {
-    
-  
-    
-    
+
     if (ennemy->object.life > 0)
     {
-    ennemy->hitbox[0].hit1.x = ennemy->object.position.x;
-    ennemy->hitbox[0].hit1.y = ennemy->object.position.y - 44;
-    ennemy->hitbox[0].hit2.x = ennemy->object.position.x - 14;
-    ennemy->hitbox[0].hit2.y = ennemy->object.position.y + 5;
-    ennemy->hitbox[0].hit3.x = ennemy->object.position.x + 14;
-    ennemy->hitbox[0].hit3.y = ennemy->object.position.y + 5;   
-    ennemy->hitbox[1].hit1.x = ennemy->object.position.x - 14;
-    ennemy->hitbox[1].hit1.y = ennemy->object.position.y + 5;
-    ennemy->hitbox[1].hit2.x = ennemy->object.position.x - 43;
-    ennemy->hitbox[1].hit2.y = ennemy->object.position.y + 43;
-    ennemy->hitbox[1].hit3.x = ennemy->object.position.x ;
-    ennemy->hitbox[1].hit3.y = ennemy->object.position.y +32;
-    ennemy->hitbox[2].hit1.x = ennemy->object.position.x + 14;
-    ennemy->hitbox[2].hit1.y = ennemy->object.position.y + 5;
-    ennemy->hitbox[2].hit2.x = ennemy->object.position.x ;
-    ennemy->hitbox[2].hit2.y = ennemy->object.position.y +32;
-    ennemy->hitbox[2].hit3.x = ennemy->object.position.x +43;
-    ennemy->hitbox[2].hit3.y = ennemy->object.position.y +43;
-    ennemy->hitbox[3].hit1.x = ennemy->object.position.x - 14;;
-    ennemy->hitbox[3].hit1.y = ennemy->object.position.y + 5;
-    ennemy->hitbox[3].hit2.x = ennemy->object.position.x + 14;
-    ennemy->hitbox[3].hit2.y = ennemy->object.position.y + 5;
-    ennemy->hitbox[3].hit3.x = ennemy->object.position.x ;
-    ennemy->hitbox[3].hit3.y =  ennemy->object.position.y +32;
+        ennemy->hitbox[0].hit1.x = (ennemy->object.position.x);
+        ennemy->hitbox[0].hit1.y = (ennemy->object.position.y - 44 / ennemy->size);
+        ennemy->hitbox[0].hit2.x = (ennemy->object.position.x - 14 / ennemy->size);
+        ennemy->hitbox[0].hit2.y = (ennemy->object.position.y + 5 / ennemy->size);
+        ennemy->hitbox[0].hit3.x = (ennemy->object.position.x + 14 / ennemy->size);
+        ennemy->hitbox[0].hit3.y = (ennemy->object.position.y + 5 / ennemy->size);
+        ennemy->hitbox[1].hit1.x = (ennemy->object.position.x - 14 / ennemy->size);
+        ennemy->hitbox[1].hit1.y = (ennemy->object.position.y + 5 / ennemy->size);
+        ennemy->hitbox[1].hit2.x = (ennemy->object.position.x - 43 / ennemy->size);
+        ennemy->hitbox[1].hit2.y = (ennemy->object.position.y + 43 / ennemy->size);
+        ennemy->hitbox[1].hit3.x = (ennemy->object.position.x);
+        ennemy->hitbox[1].hit3.y = (ennemy->object.position.y + 32 / ennemy->size);
+        ennemy->hitbox[2].hit1.x = (ennemy->object.position.x + 14 / ennemy->size);
+        ennemy->hitbox[2].hit1.y = (ennemy->object.position.y + 5 / ennemy->size);
+        ennemy->hitbox[2].hit2.x = (ennemy->object.position.x);
+        ennemy->hitbox[2].hit2.y = (ennemy->object.position.y + 32 / ennemy->size);
+        ennemy->hitbox[2].hit3.x = (ennemy->object.position.x + 43 / ennemy->size);
+        ennemy->hitbox[2].hit3.y = (ennemy->object.position.y + 43 / ennemy->size);
+        ennemy->hitbox[3].hit1.x = (ennemy->object.position.x - 14 / ennemy->size);
+        ennemy->hitbox[3].hit1.y = (ennemy->object.position.y + 5 / ennemy->size);
+        ennemy->hitbox[3].hit2.x = (ennemy->object.position.x + 14 / ennemy->size);
+        ennemy->hitbox[3].hit2.y = (ennemy->object.position.y + 5 / ennemy->size);
+        ennemy->hitbox[3].hit3.x = (ennemy->object.position.x);
+        ennemy->hitbox[3].hit3.y = (ennemy->object.position.y + 32 / ennemy->size);
 
-    rotateTriangleMine(&ennemy->hitbox[0],ennemy->object.position,ennemy->object.angle);
-    rotateTriangleMine(&ennemy->hitbox[1],ennemy->object.position,ennemy->object.angle);
-    rotateTriangleMine(&ennemy->hitbox[2],ennemy->object.position,ennemy->object.angle);
-    rotateTriangleMine(&ennemy->hitbox[3],ennemy->object.position,ennemy->object.angle);
+        rotateTriangleMine(&ennemy->hitbox[0], ennemy->object.position, ennemy->object.angle, ennemy->size);
+        rotateTriangleMine(&ennemy->hitbox[1], ennemy->object.position, ennemy->object.angle, ennemy->size);
+        rotateTriangleMine(&ennemy->hitbox[2], ennemy->object.position, ennemy->object.angle, ennemy->size);
+        rotateTriangleMine(&ennemy->hitbox[3], ennemy->object.position, ennemy->object.angle, ennemy->size);
 
         ennemy->object.angle++;
-
-    
 
         float xVec = sin(degToRad(ennemy->object.dir.x));
         float yVec = cos(degToRad(ennemy->object.dir.x));
@@ -259,11 +246,29 @@ void ennemyUpdate(Mine1 *ennemy)
         {
             ennemy->object.position.y = 40;
         }
-      
     }
 }
 
-
+bool colShipMine1(Triangle *player, Mine1 *ennemy)
+{
+    if (colTriangle(player->cot1, player->cot2, player->cot3, ennemy->hitbox[0].cot1, ennemy->hitbox[0].cot2, ennemy->hitbox[0].cot3) == true)
+    {
+        return true;
+    }
+    if (colTriangle(player->cot1, player->cot2, player->cot3, ennemy->hitbox[1].cot1, ennemy->hitbox[1].cot2, ennemy->hitbox[1].cot3) == true)
+    {
+        return true;
+    }
+    if (colTriangle(player->cot1, player->cot2, player->cot3, ennemy->hitbox[2].cot1, ennemy->hitbox[2].cot2, ennemy->hitbox[2].cot3) == true)
+    {
+        return true;
+    }
+    if (colTriangle(player->cot1, player->cot2, player->cot3, ennemy->hitbox[3].cot1, ennemy->hitbox[3].cot2, ennemy->hitbox[3].cot3) == true)
+    {
+        return true;
+    }
+    return false;
+}
 
 void playerUpdate(Triangle *player, Game *game, int left, int right, int up, int shoot)
 {
@@ -343,27 +348,28 @@ void playerUpdate(Triangle *player, Game *game, int left, int right, int up, int
     }
 }
 
-void mineDest(Mine1* ennemy,Game *game, int i)
+void mineDest(Mine1 *ennemy, Game *game, int i)
 {
-    ennemy->object.life=0;
-    if(ennemy->size==1)
+    ennemy->object.life = 0;
+    if (ennemy->size == 1)
     {
-    ennemyInit(&game->ennemy[i+1],2);
-    ennemyInit(&game->ennemy[i+2],2);
+        ennemyInit(&game->ennemy[i + 1], 2, ennemy->object.position.x, ennemy->object.position.y);
+       ennemyInit(&game->ennemy[i + 2], 2, ennemy->object.position.x, ennemy->object.position.y);
     }
-      if(ennemy->size==2)
+    if (ennemy->size == 2)
     {
-    ennemyInit(&game->ennemy[i+1],3);
-    ennemyInit(&game->ennemy[i+2],3);
-    }    
+        ennemyInit(&game->ennemy[i + 1], 3, ennemy->object.position.x, ennemy->object.position.y);
+       ennemyInit(&game->ennemy[i + 2], 3, ennemy->object.position.x, ennemy->object.position.y);
+    }
 }
 void gameUpdateAndDraw(Game *game)
 {
 
     playerUpdate(&game->player[0], game, KEY_D, KEY_G, KEY_R, KEY_F);
-    
-    for(int i=0; i<35;i++){
-    ennemyUpdate(&game->ennemy[i]);
+
+    for (int i = 0; i < 35; i++)
+    {
+        ennemyUpdate(&game->ennemy[i]);
     }
     if (game->coop == true)
     {
@@ -375,7 +381,13 @@ void gameUpdateAndDraw(Game *game)
     }
     else
     {
-        //loop coll (player 1, mine[i])
+        for (int i = 0; i < 35; i++)
+        {
+            if (game->ennemy[i].object.life > 0 && colShipMine1(&game->player[0], &game->ennemy[i]) == true)
+            {
+                mineDest(&game->ennemy[i], game, i);
+            }
+        }
     }
 }
 

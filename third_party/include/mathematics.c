@@ -105,6 +105,7 @@ float minFinder(float k1, float k2, float k3)
     {
         return k3;
     }
+    return 1;
 }
 
 bool checkColTriangle(Vec A1, Vec B1, Vec C1, Vec A2, Vec B2, Vec C2)
