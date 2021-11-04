@@ -5,6 +5,7 @@ int main(void)
 {
     const int screenWidth = 640;
     const int screenHeight = 800;
+    float inutile;
     Game game = {0};
     int ui;
     InitWindow(screenWidth, screenHeight, "Minestorm");
